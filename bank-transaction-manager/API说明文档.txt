@@ -1,0 +1,257 @@
+
+# Banking Transaction Manager API 文档
+
+## 概述
+
+本API提供了对交易记录的基本CRUD操作（创建、读取、更新和删除）。所有请求都需要通过HTTP进行，并且响应格式为JSON。
+
+## API 端点列表
+
+### 1. 创建一个新的交易记录
+
+- **URL**: `/api/transactions`
+- **Method**: `POST`
+- **Description**: 创建一个新的交易记录。
+- **Request Body**:
+  ```json
+  {
+    "type": "Deposit",
+    "amount": 100.0
+  }
+  ```
+- **Response**:
+  - **成功**:
+    ```json
+    {
+      "success": true,
+      "message": "Transaction created successfully",
+      "data": {
+        "id": 1,
+        "type": "Deposit",
+        "amount": 100.0
+      },
+      "errors": {}
+    }
+    ```
+  - **HTTP Status Code**: `200 OK`
+
+### 2. 分页获取所有交易记录
+
+- **URL**: `/api/transactions`
+- **Method**: `GET`
+- **Description**: 获取指定分页的交易列表。
+- **Query Parameters**:
+  - `page` (integer, optional, default=0): 分页编号，从0开始。
+  - `size` (integer, optional, default=10): 每页大小。
+- **Response**:
+  - **成功**:
+    ```json
+    {
+      "success": true,
+      "message": "Transactions fetched successfully",
+      "data": [
+        {
+          "id": 1,
+          "type": "Deposit",
+          "amount": 100.0
+        },
+        ...
+      ],
+      "errors": {}
+    }
+    ```
+  - **HTTP Status Code**: `200 OK`
+
+### 3. 根据交易ID获取单个交易记录
+
+- **URL**: `/api/transactions/{id}`
+- **Method**: `GET`
+- **Description**: 根据交易ID获取单个交易记录。
+- **Path Variables**:
+  - `id` (Long): 要查询的交易ID。
+- **Response**:
+  - **成功**:
+    ```json
+    {
+      "success": true,
+      "message": "Transaction fetched successfully",
+      "data": {
+        "id": 1,
+        "type": "Deposit",
+        "amount": 100.0
+      },
+      "errors": {}
+    }
+    ```
+  - **HTTP Status Code**: `200 OK`
+
+### 4. 根据交易ID更新已有交易记录
+
+- **URL**: `/api/transactions/{id}`
+- **Method**: `PUT`
+- **Description**: 根据交易ID更新已有交易记录。
+- **Path Variables**:
+  - `id` (Long): 要更新的交易ID。
+- **Request Body**:
+  ```json
+  {
+    "type": "Withdrawal",
+    "amount": 50.0
+  }
+  ```
+- **Response**:
+  - **成功**:
+    ```json
+    {
+      "success": true,
+      "message": "Transaction updated successfully",
+      "data": {
+        "id": 1,
+        "type": "Withdrawal",
+        "amount": 50.0
+      },
+      "errors": {}
+    }
+    ```
+  - **HTTP Status Code**: `200 OK`
+
+### 5. 根据交易ID删除指定的交易记录
+
+- **URL**: `/api/transactions/{id}`
+- **Method**: `DELETE`
+- **Description**: 根据交易ID删除指定的交易记录。
+- **Path Variables**:
+  - `id` (Long): 要删除的交易ID。
+- **Response**:
+  - **成功**:
+    - **HTTP Status Code**: `204 No Content`
+
+---
+
+## 错误处理
+
+所有错误响应将遵循以下格式：
+
+```json
+{
+  "success": false,
+  "message": "Error message here",
+  "data": null,
+  "errors": {
+    "field_name": ["error_message"]
+  }
+}
+```
+
+例如，如果尝试创建一个没有类型或金额的交易，可能会收到如下响应：
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "data": null,
+  "errors": {
+    "type": ["must not be null"],
+    "amount": ["must not be null"]
+  }
+}
+```
+
+---
+
+## 示例
+
+### 创建新交易
+
+**Request:**
+```http
+POST /api/transactions HTTP/1.1
+Content-Type: application/json
+
+{
+  "type": "Deposit",
+  "amount": 100.0
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction created successfully",
+  "data": {
+    "id": 1,
+    "type": "Deposit",
+    "amount": 100.0
+  },
+  "errors": {}
+}
+```
+
+### 获取所有交易（分页）
+
+**Request:**
+```http
+GET /api/transactions?page=0&size=10 HTTP/1.1
+Accept: application/json
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transactions fetched successfully",
+  "data": [
+    {
+      "id": 1,
+      "type": "Deposit",
+      "amount": 100.0
+    },
+    ...
+  ],
+  "errors": {}
+}
+```
+
+### 更新交易
+
+**Request:**
+```http
+PUT /api/transactions/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "type": "Withdrawal",
+  "amount": 50.0
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Transaction updated successfully",
+  "data": {
+    "id": 1,
+    "type": "Withdrawal",
+    "amount": 50.0
+  },
+  "errors": {}
+}
+```
+
+### 删除交易
+
+**Request:**
+```http
+DELETE /api/transactions/1 HTTP/1.1
+```
+
+**Response:** (OK)
+```http
+200 OK
+```
+
+---
+
+这份文档详细介绍了如何与你的API交互，包括每个端点的功能、请求格式及响应示例。希望这对开发者理解和使用你的API有所帮助。如果有任何问题或需要进一步的信息，请随时联系。
